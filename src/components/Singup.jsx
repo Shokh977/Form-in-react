@@ -1,16 +1,27 @@
+import { useState } from "react";
+
 export default function Signup() {
+  const [passwordsAreNotEqual, setPasswordsAreNotEqual] = useState(false);
+  
   const handleSubmit = (event) => {
     event.preventDefault();
     // to use this method to get values, inputs must have "name"
-    const formdata = new FormData(event.target);
-    const acquisitionGroup = formdata.getAll("acquisition");
-    const data = Object.fromEntries(formdata.entries());
+    const formData = new FormData(event.target);
+    const acquisitionGroup = formData.getAll("acquisition");
+    const data = Object.fromEntries(formData.entries());
     // here 'acquisiotion' comes after data. is just a given name.
     data.acquisition = acquisitionGroup;
     console.log(data);
+    console.log(formData, "entries");
+    if (data.password !== data["confirm-password"]) {
+      setPasswordsAreNotEqual(true);
+      return;
+    } 
+    
     // the reset button can reset input values by default because its type is set to reset (type = ' reset ')
     //here if we include reset method, inputs will be reset when we click the "sign up" button as well.
     event.target.reset();
+   
   };
 
   return (
@@ -20,13 +31,13 @@ export default function Signup() {
 
       <div className="control">
         <label htmlFor="email">Email</label>
-        <input id="email" type="email" name="email" />
+        <input id="email" type="email" name="email" required />
       </div>
 
       <div className="control-row">
         <div className="control">
           <label htmlFor="password">Password</label>
-          <input id="password" type="password" name="password" />
+          <input id="password" type="password" name="password" minLength={6} />
         </div>
 
         <div className="control">
@@ -36,6 +47,9 @@ export default function Signup() {
             type="password"
             name="confirm-password"
           />
+          <div className="control-error">
+            {passwordsAreNotEqual && <p>Passwords must match.</p>}
+          </div>
         </div>
       </div>
 
@@ -44,7 +58,7 @@ export default function Signup() {
       <div className="control-row">
         <div className="control">
           <label htmlFor="first-name">First Name</label>
-          <input type="text" id="first-name" name="first-name" />
+          <input type="text" id="first-name" name="first-name" required />
         </div>
 
         <div className="control">
@@ -94,8 +108,13 @@ export default function Signup() {
 
       <div className="control">
         <label htmlFor="terms-and-conditions">
-          <input type="checkbox" id="terms-and-conditions" name="terms" />I
-          agree to the terms and conditions
+          <input
+            type="checkbox"
+            id="terms-and-conditions"
+            name="terms"
+            required
+          />
+          I agree to the terms and conditions
         </label>
       </div>
 
